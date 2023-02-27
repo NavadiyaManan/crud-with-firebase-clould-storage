@@ -1,0 +1,172 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container px-4 px-lg-5">
+        <a class="navbar-brand">TheBookBazar</a>
+       
+            <form class="d-flex">
+             
+                <button  class="btn btn-success" type="button"  data-bs-toggle="modal" data-bs-target="#exampleModal" >
+                  Add Employee
+                 </button>
+               
+              
+            </form>
+        </div>
+    
+</nav>
+
+
+<table class="table mt-3">
+  <thead>
+      <th scope="col"> Id</th>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col"> Email</th>
+      <th scope="col"> Salary</th>
+      <th scope="col"> Action</th>
+  
+  </thead>    
+  <tbody>
+      <tr *ngFor="let row of getData">
+          <td>{{row.id}}</td>
+          <td>{{row.fname}}</td>
+          <td>{{row.lname}}</td>
+          <td>{{row.email}}</td>
+          <td>{{row.salary}}</td>
+          <td>
+              <button type="button"  data-bs-target="#exampleModal" (click)="edit(row)" data-bs-toggle="modal" class="btn btn-info">Edit</button>
+              <button (click)="deleteEmp(row)" class="btn btn-danger mx-3">Delete
+              </button>
+          </td>
+        </tr>
+  </tbody>
+  </table>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Employee Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <form [formGroup]="formValue" (ngSubmit)="submit()">
+            <div class="form-group">
+              <div class="mb-3">
+                <!-- Reactive Validation  -->
+                  <label for="fname" class="form-label">First Name</label>
+                  <input type="text"  id="fname" class="form-control" formControlName="fname" >
+                  <!-- <span *ngIf="formValue.get('fname')?.invalid && formValue.get('fname')?.touched" style="color:red">First Name is required -->
+                  <div *ngIf="fname?.invalid && (fname?.dirty || fname?.touched)"
+                  class="alert alert-danger">
+                    <div *ngIf="fname?.errors?.['required']">
+                    First Name is required.
+                  </div>
+                  <div *ngIf="fname?.errors?.['minlength']">
+                    Fisrt Name must be at least 2 characters long.
+                  </div>
+                </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="lname" class="form-label">Last Name</label>
+                  <input type="text" ngModel name="lname" class="form-control" formControlName="lname"  >
+                  <span *ngIf="lname && lname && lname.invalid && lname.touched" style="color:red">Last Name is required</span>
+                </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email"  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control" formControlName="email" aria-describedby="emailHelp">
+                <span *ngIf="email && email.invalid && email.touched" style="color:red">Email is required <br>
+                  <span *ngIf="email.errors?.['pattern']">Add Proper Email Address</span>
+                </span>
+              </div>
+
+               <div class="mb-3">
+                  <label for="salary" class="form-label">Salary</label>
+                  <input type="text" onkeypress="return event.charCode>=48 && event.charCode<=57" ngModel class="form-control" formControlName="salary"  >
+                  <span *ngIf="salary && salary.invalid && salary.touched" style="color:red">salary is required    <br>
+                  <span *ngIf="salary.errors?.['pattern']">Add only Numeric value</span> </span>
+              
+                </div>
+              </div>
+            </form>
+        
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="cancle" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" (click)="AddEmp()" [disabled]="formValue.invalid" class="btn btn-primary">Add Employee</button>
+        <button type="button" (click)="updateEmp(formValue.value)"  class="btn btn-primary">Update Employee</button>
+        
+      </div>
+  </div>
+</div>
+ 
+
+
+<!-- Edit Model  -->
+<!-- <div class="modal fade" id="editmodel" tabindex="-1" aria-labelledby="editmodelLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editmodelLabel">Edit Employee Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <form [formGroup]="editForm" (ngSubmit)="submit()">
+            <div class="form-group">
+            
+              <div class="mb-3">
+                
+                  <label for="fname" class="form-label">First Name</label>
+                  <input type="text"  id="fname" class="form-control" formControlName="E_fname" >
+                  
+                  <div *ngIf="E_fname?.invalid && (E_fname?.dirty || E_fname?.touched)"
+                  class="alert alert-danger">
+                    <div *ngIf="E_fname?.errors?.['required']">
+                    First Name is required.
+                  </div>
+                  <div *ngIf="E_fname?.errors?.['minlength']">
+                    Fisrt Name must be at least 2 characters long.
+                  </div>
+                </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="lname" class="form-label">Last Name</label>
+                  <input type="text" ngModel name="lname" class="form-control" formControlName="lname"  >
+                  <span *ngIf="lname && lname && lname.invalid && lname.touched" style="color:red">Last Name is required</span>
+                </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email"  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control" formControlName="email" aria-describedby="emailHelp">
+                <span *ngIf="email && email.invalid && email.touched" style="color:red">Email is required <br>
+                  <span *ngIf="email.errors?.['pattern']">Add Proper Email Address</span>
+                </span>
+              </div>
+
+               <div class="mb-3">
+                  <label for="salary" class="form-label">Salary</label>
+                  <input type="text" onkeypress="return event.charCode>=48 && event.charCode<=57" ngModel class="form-control" formControlName="salary"  >
+                  <span *ngIf="salary && salary.invalid && salary.touched" style="color:red">salary is required    <br>
+                  <span *ngIf="salary.errors?.['pattern']">Add only Numeric value</span> </span>
+              
+                </div>
+              </div>
+            </form>
+        
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="cancle" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+     
+        <button type="button" (click)="updateEmp()" style="display: none;" class="btn btn-primary">Update Employee</button>
+        
+      </div>
+  </div>
+</div>
+ 
+
+ -->
